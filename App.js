@@ -12,7 +12,8 @@ import {
   // Text,
   View,
   ToastAndroid,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  NativeModules
 } from 'react-native';
 
 import {
@@ -47,10 +48,22 @@ export default class App extends Component {
     menuDataList: []
   }
 
-  handleMenuItemPress = (id) => {
+  handleMenuItemPress = async (id) => {
     this.setState({
       activeMenuItem: id,
     })
+
+    try {
+      await NativeModules.customAndroid.setAlignment(1);
+      await NativeModules.customAndroid.printOriginalText(`RIR CHINR \n`);
+      await NativeModules.customAndroid.printOriginalText(`中国国际航空公司 \n`);
+      await NativeModules.customAndroid.setAlignment(0);
+      await NativeModules.customAndroid.printOriginalText(`WULUNYI`);
+      await NativeModules.customAndroid.printOriginalText(`菜单 ${id} \n`);
+      await NativeModules.customAndroid.lineWrap(5);
+    } catch (error) {
+      NativeModules.show('error');
+    }
   }
 
   render() {
