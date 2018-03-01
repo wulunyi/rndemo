@@ -10,10 +10,28 @@ import {
   Platform,
   StyleSheet,
   // Text,
-  // View
+  View,
+  ToastAndroid,
+  TouchableWithoutFeedback
 } from 'react-native';
 
-import { Expo, Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Text } from 'native-base';
+import {
+  Container,
+  Header,
+  Title,
+  Content,
+  Footer,
+  FooterTab,
+  Button,
+  Left,
+  Right,
+  Body,
+  Icon,
+  Text,
+  Grid,
+  Col
+ } from 'native-base';
+ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 // const instructions = Platform.select({
 //   ios: 'Press Cmd+R to reload,\n' +
@@ -23,33 +41,55 @@ import { Expo, Container, Header, Title, Content, Footer, FooterTab, Button, Lef
 // });
 
 export default class App extends Component {
-  // async componentWillMount() {
-  //   await Expo.Font.loadAsync({
-  //     'Roboto': require('native-base/Fonts/Roboto.ttf'),
-  //     'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-  //   });
-  // }
+  state = {
+    activeMenuItem: 1,
+    menuTagList: [1,2,3,4,5,6,7,7],
+    menuDataList: []
+  }
+
+  handleMenuItemPress = (id) => {
+    this.setState({
+      activeMenuItem: id,
+    })
+  }
 
   render() {
+    const {activeMenuItem, menuTagList} = this.state;
+
     return (
       <Container>
         <Header>
           <Left>
             <Button transparent>
               <Icon name='home' />
-              <Icon name='menu' />
             </Button>
           </Left>
-          <Body>
+          <Body >
             <Title>Header</Title>
           </Body>
           <Right />
         </Header>
-        <Content>
-          <Text>
-            This is Content Section
-          </Text>
-        </Content>
+
+        <View style={{position: 'relative', flex: 1}}>
+          <Grid>
+            <Col style={{width: 81, backgroundColor: '#f4f4f4'}}>
+              <KeyboardAwareScrollView style={{flex: 1, borderRightWidth: 1, borderRightColor: '#adadad'}}>
+                {
+                  menuTagList.map( (item, index) => (
+                    <View style={[styles.menuItem, index === activeMenuItem && styles.active]} key={index}>
+                      <TouchableWithoutFeedback onPress={() => this.handleMenuItemPress(index)}>
+                        <Text style={[styles.menuItemText, index === activeMenuItem && styles.activeText]}> 菜名{item}/{index}</Text>
+                      </TouchableWithoutFeedback>
+                    </View>
+                  ))
+                }
+              </KeyboardAwareScrollView>
+            </Col>
+            <Col style={{flex: 1}}>
+            </Col>
+          </Grid>
+        </View>
+
         <Footer>
           <FooterTab>
             <Button full>
@@ -63,20 +103,23 @@ export default class App extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+  menuItem: {
+    borderBottomColor: '#fff',
+    borderBottomWidth: 1,
+    height: 50,
   },
-  welcome: {
-    fontSize: 20,
+  menuItemText: {
+    lineHeight: 50,
     textAlign: 'center',
-    margin: 10,
+    color: '#5D5D5D'
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  active: {
+    backgroundColor: '#fff',
+    borderLeftColor: '#8C161B',
+    borderLeftWidth: 4,
   },
+  activeText: {
+    color: '#8C161B',
+    fontWeight: 'bold',
+  }
 });
